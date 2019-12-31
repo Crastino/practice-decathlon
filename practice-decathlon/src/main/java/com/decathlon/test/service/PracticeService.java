@@ -1,8 +1,14 @@
 package com.decathlon.test.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.decathlon.test.pojo.Product;
 
@@ -11,20 +17,60 @@ public class PracticeService {
 	
 private static final Logger LOG = LoggerFactory.getLogger(PracticeService.class);
 	
-	
-	public Product getById(long id) {
-		return new Product();
+	public List<Product> getAll(HttpSession session) {
+		return (List<Product>) session.getAttribute("decathlon");
 	}
 	
-	public Product create(Product product) {
-		return new Product();
+	public Product getById(long id, HttpSession session) {
+		List<Product> productList = (List<Product>) session.getAttribute("decathlon");
+		if(!CollectionUtils.isEmpty(productList)) {
+			for (Product product : productList) {
+				if(product.getId() == id) {
+					return product;
+				}
+			}
+		}
+		return null;
+	}
+		
+	public Product create(Product product, HttpSession session) {
+		List<Product> productList = (List<Product>) session.getAttribute("decathlon");
+		
+		if(CollectionUtils.isEmpty(productList)) {
+			productList = new ArrayList<>();
+		}
+		
+		productList.add(product);
+		session.setAttribute("decathlon", productList);
+		
+		return product;
 	}
 
-	public Product update(long id, Product product) {
-		return new Product();
+	public Product update(long id, Product product, HttpSession session) {
+		List<Product> productList = (List<Product>) session.getAttribute("decathlon");
+		if(!CollectionUtils.isEmpty(productList)) {
+			for (Product p : productList) {
+				if(p.getId() == id) {
+					productList.remove(p);
+					p = product;
+					productList.add(product);
+					return p;
+				}
+			}
+		}
+		
+		return null;
 	}
 	
-	public void delete(long id) {
-		
+	public void delete(long id, HttpSession session) {
+		List<Product> productList = (List<Product>) session.getAttribute("decathlon");
+		if(!CollectionUtils.isEmpty(productList)) {
+			for (Product product : productList) {
+				if(product.getId() == id) {
+					productList.remove(product);
+					 break;
+				}
+			}
+		}
 	}
 }

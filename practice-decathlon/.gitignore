@@ -1,0 +1,16 @@
+/target
+/bin
+/logs-dw
+
+.classpath
+.factorypath
+.project
+.settings
+.vscode
+.sonar
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
